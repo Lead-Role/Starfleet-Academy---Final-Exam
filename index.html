@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starfleet Academy Exam</title>
+    <style>
+       @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap");
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: #000000;
+            font-family: "Orbitron", sans-serif;
+            color: #ffcc33;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .lcars-title-bar {
+            background-color: #ffd700;
+            font-weight: bold;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 4px solid #663300;
+        }
+
+        .lcars-title {
+            font-size: 20pt;
+            color: #000000;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .lcars-container {
+            display: flex;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .lcars-sidebar {
+            width: 350px;
+            height: 600px;
+            background-color: #152238;
+            padding: 2px;
+            color: #ff9933;
+            border-radius: 25px;
+            background-image: url('https://raw.githubusercontent.com/Lead-Role/Starfleet-Acadamy---Final-Exam/refs/heads/main/LCARS%20-%20Starfleet%20Academy%20Exams.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+            text-align: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .lcars-main {
+            flex-grow: 1;
+            background-color: #000000;
+            padding: 50px 50px 3px 50px;
+            color: #ffcc33;
+            border: 4px solid #ff9933;
+            border-radius: 25px;
+            box-sizing: border-box;
+            overflow-y: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .lcars-footer {
+            background-color: #800020;
+            padding: 15px 0;
+            color: #ffff00;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            border-top: 4px solid #ff9933;
+            font-size: 16pt;
+            font-weight: bold;
+            box-sizing: border-box;
+            line-height: 1.2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .lcars-footer #stardate {
+            text-align: left;
+            padding-left: 30px;
+            color: #ffffff;
+            font-size: 14pt;
+            position: absolute;
+            bottom: 15px;
+            left: 30px;
+        }
+
+        #ensign-pass, #ensign-fail, #lieutenant-pass, #lieutenant-fail, #commander-pass, #commander-fail {
+            display: none;
+            text-align: center;
+            width: 100%;
+            margin-top: 150px;
+        }
+
+        button {
+            font-size: 14pt;
+            background-color: #003366;
+            color: #ffcc33;
+            border: 2px solid white;
+            padding: 8px 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #ff9933;
+            color: #000000;
+        }
+
+        .description {
+            font-size: 18pt;
+            margin: 20px 0;
+        }
+
+        .question-count {
+            font-size: 16pt;
+            margin-top: 75px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 50px;
+        }
+
+        .button-container-passfail {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feedback-question {
+            font-family: "Orbitron", sans-serif;
+            font-size: 20pt;
+            color: gold;
+            text-align: center;
+        }
+
+        .feedback-message.correct {
+            color: limegreen;
+        }
+
+        .feedback-message.incorrect {
+            color: tomato;
+        }
+
+        .feedback-message {
+            font-family: Arial, sans-serif;
+            font-size: 18pt;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .feedback-narrative {
+            font-family: Arial, sans-serif;
+            font-size: 16pt;
+            color: white;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .feedback-score {
+            font-family: Arial, sans-serif;
+            font-size: 20pt;
+            color: gold;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .feedback-image {
+            width: 150px;
+            height: 150px;
+            position: absolute;
+            bottom: 130px;
+            left: calc(350px + 50px);
+        }
+
+        .feedback-next-button {
+            padding: 10px 15px;
+            font-size: 14pt;
+            background-color: #003366;
+            color: #ffcc33;
+            border: 2px solid white;
+            border-radius: 10px;
+            cursor: pointer;
+            position: absolute;
+            top: calc(100% - 130px - 75px);
+            right: 150px;
+            transition: all 0.2s ease;
+        }
+
+        .feedback-next-button:hover {
+            background-color: #ff9933;
+            color: #000000;
+        }
+
+        #ensign-pass p, #ensign-fail p, #lieutenant-pass p, #lieutenant-fail p, #commander-pass p, #commander-fail p {
+            font-family: Arial, sans-serif;
+            font-size: 20pt;
+            color: white;
+            margin-bottom: 30px;
+            margin-left: 75px;
+            margin-right: 75px;
+            word-wrap: break-word;
+        }
+
+        .ensign-extra-info {
+            margin-top: 100px;
+            text-align: center;
+            font-size: 18pt;
+            color: white;
+        }
+
+        .incorrect-answer-title {
+            font-family: Arial, sans-serif;
+            font-size: 18pt;
+            color: white;
+            text-align: left;
+            margin-left: 50px;
+        }
+
+        .incorrect-answer-question {
+            font-family: Arial, sans-serif;
+            font-size: 18pt;
+            color: green;
+            text-align: center;
+        }
+
+        .incorrect-answer-correct {
+            font-family: Arial, sans-serif;
+            font-size: 18pt;
+            color: tomato;
+            text-align: center;
+        }
+
+        .incorrect-answer-incorrect {
+            font-family: Arial, sans-serif;
+            font-size: 18pt;
+            color: #0000ff;
+            text-align: center;
+        }
+
+        .incorrect-answer-link {
+            font-family: Arial, sans-serif;
+            font-size: 18pt;
+            color: #ffcc33;
+            text-align: center;
+            display: block;
+            margin-top: 20px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .incorrect-answer-link:hover {
+            color: #ffffff;
+        }
+
+		#review-page {
+			position: relative;
+			top: 0;
+			padding: 20px 0; /* Adjust this as necessary */
+			margin: 0;
+			height: calc(100vh - 60px); /* Ensure it fits the viewport */
+			overflow-y: auto;
+			box-sizing: border-box;
+}
+
+
+        .review-text {
+            font-family: Arial, sans-serif;
+            font-size: 18pt;
+            color: white;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .review-subtext {
+            font-family: Arial, sans-serif;
+            font-size: 18pt;
+            color: white;
+            text-align: center;
+            margin-top: 50px;
+        }
+		
+		@media only screen and (max-width: 768px) {
+    .lcars-sidebar {
+        display: none;
+    }
+
+    #stardate {
+        display: none;
+    }
+
+    .lcars-main {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .lcars-footer {
+        font-size: 14pt;
+        padding: 10px;
+    }
+
+    .button-container {
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .description,
+    .question-count,
+    .button-container {
+        display: block;
+    }
+
+    #feedback-page, 
+    #ensign-pass, 
+    #ensign-fail, 
+    #lieutenant-pass, 
+    #lieutenant-fail, 
+    #commander-pass, 
+    #commander-fail {
+        display: none;
+    }
+
+    .question-page .lcars-title-bar,
+    .question-page .lcars-footer {
+        display: none;
+    }
+
+    .feedback-page .lcars-footer {
+        display: none;
+    }
+
+    .feedback-next-button {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        height: 50px;
+        line-height: 50px;
+        font-size: 14pt;
+        background-color: #003366;
+        color: #ffcc33;
+        border: 2px solid white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 100;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .feedback-next-button:hover {
+        background-color: #ff9933;
+        color: #000000;
+    }
+}
+
+
+
+    </style>
+</head>
+<body>
+    <div class="lcars-title-bar">
+        <div class="lcars-title">Starfleet Academy Exam System</div>
+    </div>
+
+    <div class="lcars-container">
+        <div class="lcars-sidebar"></div>
+
+        <div id="main-content" class="lcars-main">
+            <div class="description">
+                This is your final step to qualify for promotion. Select your examination level below.
+            </div>
+            <div class="question-count">
+                Ensigns = 10 Questions / Lieutenants = 25 Questions / Commanders = 50 Questions
+            </div>
+            <div class="button-container">
+                <button class="question-button">Ensign</button>
+                <button class="question-button">Lieutenant</button>
+                <button class="question-button">Commander</button>
+            </div>
+        </div>
+
+        <div id="feedback-page" class="lcars-main" style="display: none;"></div>
+
+        <div id="ensign-pass" style="display: none;">
+            <p>You passed the Ensign level exam. Congratulations!</p>
+            <p class="ensign-extra-info">You are hereby promoted to Ensign.</p>
+            <p class="ensign-extra-info">You are ordered to report to Chief Engineer Lt. Commander La Forge onboard U.S.S. Enterprise NCC-1701-D no later than Stardate 54287.5</p>
+            <div class="button-container-passfail">
+                <button class="question-button return-main-menu">Return to Main Menu</button>
+            </div>
+        </div>
+
+        <div id="ensign-fail" style="display: none;">
+            <p>We're sorry, Cadet. Unfortunately, you did not pass the Ensign level exam.</p>
+            <p class="ensign-extra-info">You are ordered to report to Lt. Sylvia Tilly at Starfleet Academy, Room #131 for re-training. You must report by Stardate 54287.5</p>
+            <div class="button-container-passfail">
+                <button class="question-button return-main-menu">Return to Main Menu</button>
+            </div>
+        </div>
+
+        <div id="lieutenant-pass" style="display: none;">
+            <p>You passed the Lieutenant level exam. Congratulations!</p>
+            <p class="ensign-extra-info">You are hereby promoted to Lieutenant.</p>
+            <p class="ensign-extra-info">You are ordered to report to Chief Security Officer Lt. Commander Worf onboard U.S.S. Enterprise NCC-1701-D no later than Stardate 54287.5</p>
+            <div class="button-container-passfail">
+                <button class="question-button return-main-menu">Return to Main Menu</button>
+            </div>
+        </div>
+
+        <div id="lieutenant-fail" style="display: none;">
+            <p>We're sorry, Ensign. Unfortunately, you did not pass the Lieutenant level exam.</p>
+            <p class="ensign-extra-info">You are ordered to return to your previous duty onboard U.S.S. Hood NCC-42296 no later than Stardate 54287.5</p>
+            <div class="button-container-passfail">
+                <button class="question-button return-main-menu">Return to Main Menu</button>
+            </div>
+        </div>
+
+        <div id="commander-pass" style="display: none;">
+            <p>You passed the Commander level exam. Congratulations!</p>
+            <p class="ensign-extra-info">You are hereby promoted to Commander.</p>
+            <p class="ensign-extra-info">You are ordered to report to Captain Jean-Luc Picard onboard U.S.S. Enterprise NCC-1701-D no later than Stardate 54287.5</p>
+            <div class="button-container-passfail">
+                <button class="question-button return-main-menu">Return to Main Menu</button>
+            </div>
+        </div>
+
+        <div id="commander-fail" style="display: none;">
+            <p>We're sorry, Lieutenant. Unfortunately, you did not pass the Commander level exam.</p>
+            <p class="ensign-extra-info">You are ordered to return to your previous duty onboard U.S.S. Victory NCC-9754. You must report no later than Stardate 54287.5</p>
+            <div class="button-container-passfail">
+                <button class="question-button return-main-menu">Return to Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="lcars-footer">
+        <div id="stardate-container">
+            <p id="stardate">Star Date: 52174.2</p>
+        </div>
+        <p>LCARS Terminal - Authorized Personnel Only</p>
+    </div>
+
+    <div id="review-page" class="lcars-main" style="display: none;">
+        <div class="review-text">
+            <p style="font-family: Arial; font-size: 18pt; color: white; margin-bottom: 10px;">
+                The following are the questions you answered incorrectly.<br>
+                Please note that this page is currently under construction. Although all incorrect answers will provide a link, not all links will lead to a valid web page.
+            </p>
+            <br>
+        </div>
+
+        <div id="incorrect-answers-container"></div>
+
+        <div class="button-container">
+            <button class="question-button return-main-menu" style="margin-left: 30px;">Return to Main Menu</button>
+        </div>
+    </div>
+
+    <script type="module">
+        let allQuestions = [];
+let incorrectQuestions = [];
+let correctAnswers = 0;
+let incorrectAnswers = 0;
+let currentQuestionIndex = 0;
+let level;
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadQuestions();
+    setupMainPageEventListeners();
+
+    let stardate = 52174.2;
+    setInterval(() => {
+        stardate = parseFloat((stardate + 0.1).toFixed(1));
+        document.getElementById('stardate').innerHTML = `Star Date:<br>${stardate.toFixed(1)}`;
+    }, 5000);
+});
+
+function setupMainPageEventListeners() {
+    const questionButtons = document.querySelectorAll('.question-button');
+
+    if (questionButtons.length > 0) {
+        questionButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                level = event.target.textContent;
+                const numberOfQuestions = {
+                    'Ensign': 10,
+                    'Lieutenant': 25,
+                    'Commander': 50
+                }[level];
+
+                startExam(numberOfQuestions, level);
+            });
+        });
+    }
+
+    document.querySelectorAll('.return-main-menu').forEach(button => {
+        button.addEventListener('click', () => {
+            refreshPage();
+        });
+    });
+}
+
+function refreshPage() {
+    location.reload();
+}
+
+function loadQuestions() {
+    fetch('https://raw.githubusercontent.com/Lead-Role/Starfleet-Academy---Final-Exam/refs/heads/main/Starfleet%20Academy%20Exam%207.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            allQuestions = shuffleArray(data);
+        })
+        .catch(error => console.error('Error fetching questions:', error));
+}
+
+function startExam(numberOfQuestions, level) {
+    incorrectQuestions = [];
+    correctAnswers = 0;
+    incorrectAnswers = 0;
+    currentQuestionIndex = 0;
+
+    const selectedQuestions = allQuestions.slice(0, numberOfQuestions);
+
+    const shuffledQuestions = selectedQuestions.map(question => {
+        let answers = [
+            { text: question['Answer 1'], isCorrect: question['Answer 1'] === question['Correct Answer'] },
+            { text: question['Answer 2'], isCorrect: question['Answer 2'] === question['Correct Answer'] },
+            { text: question['Answer 3'], isCorrect: question['Answer 3'] === question['Correct Answer'] },
+            { text: question['Answer 4'], isCorrect: question['Answer 4'] === question['Correct Answer'] }
+        ];
+        question.answers = shuffleArray(answers);
+        return question;
+    });
+
+    displayQuestions(shuffledQuestions, level);
+}
+
+function displayQuestions(questions, level) {
+    function showQuestion() {
+        if (currentQuestionIndex >= questions.length) {
+            showFinalScore(correctAnswers, questions.length, level);
+            return;
+        }
+
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('feedback-page').style.display = 'none';
+
+        const question = questions[currentQuestionIndex];
+        const answers = question.answers;
+
+        const mainContent = document.getElementById('main-content');
+        mainContent.innerHTML = `
+            <div class="lcars-category" style="background-color: #000039; font-size: 15pt; color: gold; font-family: Arial; margin-bottom: 10px; padding: 10px;">Category: ${question['Series / Movie']}</div>
+            <div class="lcars-description" style="background-color: #000039; font-size: 15pt; color: gold; font-family: Arial; margin-bottom: 20px; padding: 10px;">Description: ${question.Description}</div>
+            <div class="lcars-question" style="font-family: Arial; font-size: 18pt; color: gold; margin-top: 20px;">${question.Question}</div>
+            <div class="lcars-answer-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+                ${answers.map(answer =>
+                    `<button class="answer-button" data-correct="${answer.isCorrect}" style="padding: 10px 15px; font-size: 14pt;">${answer.text}</button>`
+                ).join('')}
+            </div>
+        `;
+
+        document.querySelectorAll('.answer-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const isCorrect = event.target.getAttribute('data-correct') === 'true';
+
+                if (!isCorrect) {
+                    incorrectQuestions.push({
+                        Question: question.Question,
+                        CorrectAnswer: question['Correct Answer'],
+                        IncorrectAnswer: event.target.textContent,
+                        Keyword: question.Keyword
+                    });
+                }
+
+                if (isCorrect) {
+                    correctAnswers++;
+                } else {
+                    incorrectAnswers++;
+                }
+
+                displayFeedbackPage(question, isCorrect, questions, level);
+            });
+        });
+    }
+
+    showQuestion();
+}
+
+function displayFeedbackPage(question, isCorrect, questions, level) {
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('feedback-page').style.display = 'block';
+
+    const correctAnswer = question['Correct Answer'];
+    const feedbackText = isCorrect
+        ? `Correct: ${correctAnswer}`
+        : `Incorrect: The correct answer was ${correctAnswer}`;
+    const feedbackClass = isCorrect ? "correct" : "incorrect";
+    const narrative = question['Narrative'] || "No additional information.";
+
+    const totalAnswered = correctAnswers + incorrectAnswers;
+    const scoreText = `Your Score: Total Answered: ${totalAnswered}, Total Correct: ${correctAnswers}, Total Incorrect: ${incorrectAnswers}`;
+
+    const feedbackImage = isCorrect
+        ? 'https://raw.githubusercontent.com/Lead-Role/Starfleet-Acadamy---Final-Exam/refs/heads/main/Correct%20Answer.gif'
+        : 'https://raw.githubusercontent.com/Lead-Role/Starfleet-Acadamy---Final-Exam/refs/heads/main/Incorrect%20Answer.gif';
+
+    const feedbackContent = document.getElementById('feedback-page');
+    feedbackContent.innerHTML = `
+        <div class="feedback-container">
+            <img class="feedback-image" src="${feedbackImage}" alt="${isCorrect ? 'Correct Answer' : 'Incorrect Answer'}" />
+            <div class="feedback-content">
+                <div class="feedback-question">${question.Question}</div>
+                <div class="feedback-message ${feedbackClass}">${feedbackText}</div>
+                <div class="feedback-narrative">${narrative}</div>
+                <div class="feedback-score">${scoreText}</div>
+                <button class="feedback-next-button">${currentQuestionIndex + 1 < questions.length ? 'Next Question' : 'Submit for Scoring'}</button>
+            </div>
+        </div>
+    `;
+
+    document.querySelector('.feedback-next-button').addEventListener('click', () => {
+        if (currentQuestionIndex + 1 >= questions.length) {
+            showFinalScore(correctAnswers, questions.length, level);
+        } else {
+            currentQuestionIndex++;
+            displayQuestions(questions, level);
+        }
+    });
+}
+
+function showFinalScore(correctAnswers, totalQuestions, level) {
+    document.querySelector('.lcars-sidebar').style.display = 'none';
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('feedback-page').style.display = 'none';
+    document.querySelector('.lcars-footer').style.display = 'none';
+
+    const scorePercentage = (correctAnswers / totalQuestions) * 100;
+    const passThreshold = 80;
+    const isPass = scorePercentage >= passThreshold;
+
+    const passFailElementId = `${level.toLowerCase()}-${isPass ? 'pass' : 'fail'}`;
+    const passFailElement = document.getElementById(passFailElementId);
+    passFailElement.style.display = 'block';
+
+    const finalScoreMessage = `<p>Your final score is ${correctAnswers} out of ${totalQuestions} (${scorePercentage.toFixed(1)}%)</p>`;
+    passFailElement.insertAdjacentHTML('beforeend', finalScoreMessage);
+
+    const buttonContainer = passFailElement.querySelector('.button-container-passfail');
+
+    const reviewButton = document.createElement('button');
+    reviewButton.classList.add('question-button');
+    reviewButton.textContent = 'Review';
+    reviewButton.style.marginLeft = '30px';
+    reviewButton.style.display = 'inline-block';
+
+    reviewButton.addEventListener('click', () => {
+        displayReviewPage();
+        document.getElementById('review-page').style.display = 'block';
+    });
+
+    buttonContainer.appendChild(reviewButton);
+
+    passFailElement.scrollIntoView({ behavior: 'smooth' });
+}
+
+function displayReviewPage() {
+    document.querySelector('.lcars-sidebar').style.display = 'none';
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('feedback-page').style.display = 'none';
+    document.querySelector('.lcars-footer').style.display = 'none';
+    document.getElementById('ensign-pass').style.display = 'none';
+    document.getElementById('ensign-fail').style.display = 'none';
+    document.getElementById('lieutenant-pass').style.display = 'none';
+    document.getElementById('lieutenant-fail').style.display = 'none';
+    document.getElementById('commander-pass').style.display = 'none';
+    document.getElementById('commander-fail').style.display = 'none';
+
+    const reviewPage = document.getElementById('review-page');
+
+    reviewPage.innerHTML = `
+        <div class="review-text">
+            <p style="font-family: Arial; font-size: 18pt; color: white; margin-bottom: 10px;">
+                The following are the questions you answered incorrectly.<br>
+                Please note that this page is experimental and not all questions will have links, and those that do may not provide a valid web page.
+            </p>
+            <br>
+        </div>
+    `;
+
+    incorrectQuestions.forEach(question => {
+        const memoryAlphaUrl = `https://memory-alpha.fandom.com/wiki/${question.Keyword}`;
+        const questionHTML = `
+            <div style="margin-bottom: 20px;">
+                <p style="font-family: Arial; font-size: 18pt; color: gold; margin-top: 5px;">Question: ${question.Question}</p>
+                <p style="font-family: Arial; font-size: 18pt; color: red;">Your Answer: ${question.IncorrectAnswer}</p>
+                <p style="font-family: Arial; font-size: 18pt; color: green;">Correct Answer: ${question.CorrectAnswer}</p>
+                <a href="${memoryAlphaUrl}" target="_blank" style="font-family: Arial; font-size: 18pt; color: #00f; text-decoration: underline;">Learn More</a>
+            </div>
+            <br><br>
+        `;
+        reviewPage.innerHTML += questionHTML;
+    });
+
+    reviewPage.innerHTML += `
+        <div class="button-container">
+            <button class="question-button return-main-menu" style="margin-left: 30px;">Return to Main Menu</button>
+        </div>
+    `;
+
+    const returnMainMenuButton = reviewPage.querySelector('.return-main-menu');
+    if (returnMainMenuButton) {
+        returnMainMenuButton.addEventListener('click', () => {
+            refreshPage();
+        });
+    }
+
+    reviewPage.style.display = 'block';
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+
+    </script>
+</body>
+</html>
